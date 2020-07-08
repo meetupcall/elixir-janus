@@ -63,7 +63,9 @@ defmodule Janus.Plugin do
 
   def detach(pid) do
     base_url = Agent.get(pid, &(&1.base_url))
+    event_manager = Agent.get(pid, &(&1.event_manager))
     post(base_url, %{janus: :detach})
+    GenEvent.stop(event_manager)
     Agent.stop(pid)
   end
 

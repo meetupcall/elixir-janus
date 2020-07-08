@@ -88,7 +88,9 @@ defmodule Janus.Session do
     base_url = Agent.get(pid, &(&1.base_url))
     plugin_pids = Agent.get(pid, &(&1.handles)) |> Map.values()
     Enum.each (plugin_pids), &(Janus.Plugin.detach(&1))
+    event_manager = Agent.get(pid, &(&1.event_manager))
     Agent.stop(pid)
+    GenEvent.stop(event_manager)
     post(base_url, %{janus: :destroy})
   end
 
